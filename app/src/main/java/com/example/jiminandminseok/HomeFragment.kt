@@ -19,7 +19,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        
+
         val sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         val isSetupComplete = sharedPref.getBoolean("is_setup_complete", false)
 
@@ -29,7 +29,7 @@ class HomeFragment : Fragment() {
             // Return an empty view, as we are navigating away.
             return View(requireContext())
         }
-        
+
         return binding.root
     }
 

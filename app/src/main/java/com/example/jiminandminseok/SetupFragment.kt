@@ -49,7 +49,8 @@ class SetupFragment : Fragment() {
             }
 
             // Save user data to SharedPreferences
-            val sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+            val sharedPref =
+                requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
             with(sharedPref.edit()) {
                 putLong("start_date", calendar.timeInMillis)
                 putInt("daily_cigarettes", dailyCigarettes.toInt())

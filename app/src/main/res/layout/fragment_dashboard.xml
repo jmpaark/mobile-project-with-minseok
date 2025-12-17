@@ -47,11 +47,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="20dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="절약한 금액" 
-                        android:textColor="@color/text_secondary_light"/>
+                        android:text="절약한 금액"
+                        android:textColor="@color/text_secondary_light" />
+
                     <TextView
                         android:id="@+id/tvMoneySaved"
                         android:layout_width="wrap_content"
@@ -60,7 +62,7 @@
                         android:textColor="@color/primary_mint_green"
                         android:textSize="24sp"
                         android:textStyle="bold"
-                        tools:text="54,000원"/>
+                        tools:text="54,000원" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -76,11 +78,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="20dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="되찾은 수명"
-                        android:textColor="@color/text_secondary_light"/>
+                        android:textColor="@color/text_secondary_light" />
+
                     <TextView
                         android:id="@+id/tvLifeRegained"
                         android:layout_width="wrap_content"
@@ -89,12 +93,12 @@
                         android:textColor="@color/primary_mint_green"
                         android:textSize="24sp"
                         android:textStyle="bold"
-                        tools:text="+ 28시간"/>
+                        tools:text="+ 28시간" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
-        
+
         <!-- Health Recovery Gauge -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/healthGaugeCard"
@@ -133,7 +137,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvHealthGaugeTitle"
                     tools:text="혈압과 맥박이 정상으로 돌아옵니다" />
-                
+
                 <ProgressBar
                     android:id="@+id/healthGaugeBar"
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -159,7 +163,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
-        
+
         <!-- Achievement Badges Title -->
         <TextView
             android:id="@+id/tvBadgesTitle"
@@ -171,9 +175,11 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/healthGaugeCard"/>
+            app:layout_constraintTop_toBottomOf="@+id/healthGaugeCard" />
 
+        <!-- Badges -->
         <HorizontalScrollView
+            android:id="@+id/hsBadges"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -182,13 +188,67 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
+            <!-- ⚠️ HSV 직접 자식은 딱 1개 -->
             <LinearLayout
                 android:id="@+id/badgesContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" />
-                
+
         </HorizontalScrollView>
+
+        <!-- Quick Actions (HSV 밖에 둬야 함) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/quickActionCard"
+            style="@style/Widget.App.RoundCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            app:layout_constraintTop_toBottomOf="@+id/hsBadges"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="빠른 실행"
+                    android:textColor="@color/text_primary_light"
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/btnAddRecord"
+                        style="@style/Widget.App.RoundButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="기록 추가" />
+
+                    <Button
+                        android:id="@+id/btnViewRecords"
+                        style="@style/Widget.App.RoundButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="기록 보기" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
