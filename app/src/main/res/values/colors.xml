@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Premium Light Theme: A Fresh Breath -->
+    <color name="background_light_start">#F5F7FA</color> <!-- Soft White -->
+    <color name="background_light_end">#FFFFFF</color>
+
+    <color name="primary_mint_green">#66BB6A</color> <!-- Main Mint Green -->
+    <color name="primary_mint_dark">#388E3C</color>
+
+    <color name="accent_coral_orange">#FFA726</color> <!-- Accent Coral Orange -->
+
+    <color name="text_primary_light">#263238</color>    <!-- Dark Slate Gray for text -->
+    <color name="text_secondary_light">#78909C</color>  <!-- Lighter Slate Gray -->
+
+    <color name="card_background_light">#FFFFFF</color>
+    <color name="card_stroke_light">#E0E0E0</color>
+
+</resources>
