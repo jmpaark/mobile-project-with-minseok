@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.jiminandminseok.databinding.FragmentQuotesBinding
 
 data class Quote(val text: String, val author: String)
@@ -34,6 +35,12 @@ class QuotesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.btnBack.setOnClickListener {
+            if (!findNavController().navigateUp()) {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
+
 
         setRandomQuote()
 

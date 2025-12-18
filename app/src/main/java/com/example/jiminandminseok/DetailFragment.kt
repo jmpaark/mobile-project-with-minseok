@@ -24,6 +24,12 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.findViewById<View>(R.id.btnBack).setOnClickListener {
+            if (!findNavController().navigateUp()) {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
+
 
         val tvDate = view.findViewById<TextView>(R.id.tvDetailDate)
         val tvCount = view.findViewById<TextView>(R.id.tvDetailCount)

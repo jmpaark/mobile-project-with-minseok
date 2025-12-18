@@ -7,13 +7,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AddFragment : Fragment(R.layout.fragment_add) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.findViewById<View>(R.id.btnBack).setOnClickListener {
+            if (!findNavController().navigateUp()) {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
 
         val etCount = view.findViewById<TextInputEditText>(R.id.etCount)
         val etMemo = view.findViewById<TextInputEditText>(R.id.etMemo)
@@ -24,21 +28,15 @@ class AddFragment : Fragment(R.layout.fragment_add) {
             val count = countStr?.toIntOrNull()
 
             if (count == null) {
-                etCount.error = "숫자를 입력하세요"
+                etCount.error = getString(R.string.error_number)
                 return@setOnClickListener
             }
 
-            val memo = etMemo.text?.toString()?.trim()
+            val memo = etMemo.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }
 
-            lifecycleScope.launch(Dispatchers.IO) {
-                DbProvider.get(requireContext())
-                    .recordDao()
-                    .insert(RecordEntity(count = count, memo = memo))
-
-                launch(Dispatchers.Main) {
-                    // 저장 후 목록으로 이동(없으면 그냥 popBackStack 해도 됨)
-                    findNavController().navigate(R.id.action_addFragment_to_listFragment)
-                }
+            lifecycleScope.launch {
+                RecordRepositoryProvider.get(requireContext()).add(count, memo)
+                findNavController().navigate(R.id.action_addFragment_to_listFragment)
             }
         }
     }

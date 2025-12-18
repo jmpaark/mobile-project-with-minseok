@@ -1,13 +1,16 @@
 package com.example.jiminandminseok
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.jiminandminseok.databinding.FragmentHomeBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
@@ -19,22 +22,29 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        val sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val isSetupComplete = sharedPref.getBoolean("is_setup_complete", false)
-
-        if (isSetupComplete) {
-            // If setup is complete, immediately navigate to the dashboard
-            findNavController().navigate(R.id.action_homeFragment_to_dashboardFragment)
-            // Return an empty view, as we are navigating away.
-            return View(requireContext())
-        }
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.btnBack.setOnClickListener {
+            if (!findNavController().navigateUp()) {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val settings = withContext(Dispatchers.IO) {
+                DbProvider.get(requireContext().applicationContext)
+                    .settingsDao()
+                    .get()
+            }
+
+            val isComplete = settings?.isSetupComplete == true
+            if (isComplete && findNavController().currentDestination?.id == R.id.homeFragment) {
+                findNavController().navigate(R.id.action_homeFragment_to_dashboardFragment)
+            }
+        }
 
         // This code will only run if setup is NOT complete.
         binding.btnStart.setOnClickListener {

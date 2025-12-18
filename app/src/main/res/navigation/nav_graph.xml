@@ -46,7 +46,24 @@
         <action
             android:id="@+id/action_dashboardFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
+
+        <action
+            android:id="@+id/action_dashboardFragment_to_healthRecoveryFragment"
+            app:destination="@id/healthRecoveryFragment" />
+
+        <action
+            android:id="@+id/action_dashboardFragment_to_quotesFragment"
+            app:destination="@id/quotesFragment" />
+
+        <action
+            android:id="@+id/action_dashboardFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/healthRecoveryFragment"
+        android:name="com.example.jiminandminseok.HealthRecoveryFragment"
+        android:label="Health Recovery" />
 
     <fragment
         android:id="@+id/chatFragment"

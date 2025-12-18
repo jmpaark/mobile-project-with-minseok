@@ -1,0 +1,3 @@
+- 1단계 확인: Android Studio에서 debug로 실행 -> Add 저장 -> List 표시, 앱 재실행 후 데이터 유지
+- 2단계 확인: release로 실행 -> Firestore에 문서 생성 + List 표시 (google-services.json은 `app/`에 추가)
+- 빌드/실행: Android Studio에서 Build Variant를 debug/release로 선택 후 실행

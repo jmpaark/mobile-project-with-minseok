@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "521322244762",
+    "project_id": "park-e9c79",
+    "storage_bucket": "park-e9c79.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:521322244762:android:3bc02abd319bc108e84d23",
+        "android_client_info": {
+          "package_name": "com.example.jiminandminseok"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2zL7jOkxTsEGW0Z9snnA9ndsxQJKAEeM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

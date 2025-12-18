@@ -1,18 +1,20 @@
 package com.example.jiminandminseok
 
 import android.app.DatePickerDialog
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.jiminandminseok.databinding.FragmentSetupBinding
 import java.text.SimpleDateFormat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.Locale
 
@@ -23,7 +25,6 @@ class SetupFragment : Fragment() {
 
     private val calendar: Calendar = Calendar.getInstance()
 
-    // ✅ 범위
     private val DAILY_MIN = 1
     private val DAILY_MAX = 100
 
@@ -33,7 +34,6 @@ class SetupFragment : Fragment() {
     private val YEARS_MIN = 0
     private val YEARS_MAX = 80
 
-    // ✅ “처음부터 빨간 경고 뜨는거” 방지용
     private var touchedDaily = false
     private var touchedPack = false
     private var touchedYears = false
@@ -50,30 +50,25 @@ class SetupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // ✅ 에러 표시 기능 강제 ON (스타일이 덮어도 텍스트는 뜸)
         binding.tilQuitDate.isErrorEnabled = true
         binding.tilDailyCigarettes.isErrorEnabled = true
         binding.tilPackPrice.isErrorEnabled = true
         binding.tilSmokingYears.isErrorEnabled = true
 
-        // ✅ 뒤로가기
         binding.btnBack.setOnClickListener {
             if (!findNavController().navigateUp()) {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
         }
 
-        // 기본 날짜 표시
         updateDateInView()
-        clearAllErrors() // ✅ 처음엔 빨간 글씨 안 보이게
+        clearAllErrors()
 
-        // 날짜 선택
         binding.etQuitDate.setOnClickListener {
             touchedDate = true
             showDatePicker()
         }
 
-        // 실시간 검증 (입력 건드린 뒤부터만)
         binding.etDailyCigarettes.addTextChangedListener(simpleWatcher {
             touchedDaily = true
             validateDaily(showError = true)
@@ -89,7 +84,6 @@ class SetupFragment : Fragment() {
             validateYears(showError = true)
         })
 
-        // 시작 버튼: 누르면 에러 강제 표시하고 통과하면 저장+이동
         binding.btnStartQuit.setOnClickListener {
             touchedDate = true
             touchedDaily = true
@@ -102,17 +96,23 @@ class SetupFragment : Fragment() {
             val pack = binding.etPackPrice.text.toString().trim().toInt()
             val years = binding.etSmokingYears.text.toString().trim().toInt()
 
-            val pref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-            with(pref.edit()) {
-                putLong("start_date", calendar.timeInMillis)
-                putInt("daily_cigarettes", daily)
-                putInt("pack_price", pack)
-                putInt("smoking_years", years)
-                putBoolean("is_setup_complete", true)
-                apply()
-            }
+            viewLifecycleOwner.lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    DbProvider.get(requireContext().applicationContext)
+                        .settingsDao()
+                        .upsert(
+                            UserSettingsEntity(
+                                startDate = calendar.timeInMillis,
+                                dailyCigarettes = daily,
+                                packPrice = pack,
+                                smokingYears = years,
+                                isSetupComplete = true
+                            )
+                        )
+                }
 
-            findNavController().navigate(R.id.action_setupFragment_to_dashboardFragment)
+                findNavController().navigate(R.id.action_setupFragment_to_dashboardFragment)
+            }
         }
     }
 
@@ -144,8 +144,6 @@ class SetupFragment : Fragment() {
         binding.etQuitDate.setText(sdf.format(calendar.time))
     }
 
-    // ---------- 검증 ----------
-
     private fun validateAll(showError: Boolean): Boolean {
         val a = validateQuitDate(showError)
         val b = validateDaily(showError)
@@ -157,7 +155,7 @@ class SetupFragment : Fragment() {
     private fun validateQuitDate(showError: Boolean): Boolean {
         val ok = calendar.timeInMillis <= System.currentTimeMillis()
         if (showError && touchedDate) {
-            binding.tilQuitDate.error = if (ok) null else "미래 날짜는 선택할 수 없어요."
+            binding.tilQuitDate.error = if (ok) null else getString(R.string.error_future_date)
         }
         return ok
     }
@@ -167,10 +165,10 @@ class SetupFragment : Fragment() {
         val v = s.toIntOrNull()
 
         val (ok, msg) = when {
-            s.isEmpty() -> false to "하루 평균 흡연량을 입력해주세요."
-            v == null -> false to "숫자만 입력해주세요."
-            v < DAILY_MIN -> false to "${DAILY_MIN} 이상으로 입력해주세요."
-            v > DAILY_MAX -> false to "하루 ${DAILY_MAX}개비 초과는 비현실적이에요."
+            s.isEmpty() -> false to getString(R.string.error_required)
+            v == null -> false to getString(R.string.error_number)
+            v < DAILY_MIN -> false to getString(R.string.error_min_format, DAILY_MIN)
+            v > DAILY_MAX -> false to getString(R.string.error_max_format, DAILY_MAX)
             else -> true to null
         }
 
@@ -183,10 +181,10 @@ class SetupFragment : Fragment() {
         val v = s.toIntOrNull()
 
         val (ok, msg) = when {
-            s.isEmpty() -> false to "담배 한 갑 가격을 입력해주세요."
-            v == null -> false to "숫자만 입력해주세요."
-            v < PACK_MIN -> false to "${PACK_MIN}원 미만은 비현실적이에요."
-            v > PACK_MAX -> false to "${PACK_MAX}원 초과는 장난치는 값으로 보여요."
+            s.isEmpty() -> false to getString(R.string.error_required)
+            v == null -> false to getString(R.string.error_number)
+            v < PACK_MIN -> false to getString(R.string.error_min_format, PACK_MIN)
+            v > PACK_MAX -> false to getString(R.string.error_max_format, PACK_MAX)
             else -> true to null
         }
 
@@ -199,10 +197,10 @@ class SetupFragment : Fragment() {
         val v = s.toIntOrNull()
 
         val (ok, msg) = when {
-            s.isEmpty() -> false to "총 흡연 기간(년)을 입력해주세요."
-            v == null -> false to "숫자만 입력해주세요."
-            v < YEARS_MIN -> false to "${YEARS_MIN} 이상으로 입력해주세요."
-            v > YEARS_MAX -> false to "${YEARS_MAX}년 초과는 비현실적이에요."
+            s.isEmpty() -> false to getString(R.string.error_required)
+            v == null -> false to getString(R.string.error_number)
+            v < YEARS_MIN -> false to getString(R.string.error_min_format, YEARS_MIN)
+            v > YEARS_MAX -> false to getString(R.string.error_max_format, YEARS_MAX)
             else -> true to null
         }
 
