@@ -1,0 +1,28 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.JiminAndMinseok" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Other theme customizations -->
+        <item name="colorPrimary">@color/primary_mint_green</item>
+    </style>
+
+    <style name="Theme.JiminAndMinseok" parent="Base.Theme.JiminAndMinseok" />
+
+    <!-- Rounded Card Style -->
+    <style name="Widget.App.RoundCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/card_background_light</item>
+        <item name="cardCornerRadius">24dp</item>
+        <item name="cardElevation">8dp</item>
+        <item name="strokeColor">@color/card_stroke_light</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <!-- Rounded Button Style -->
+    <style name="Widget.App.RoundButton" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">24dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>
